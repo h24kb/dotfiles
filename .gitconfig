@@ -1,0 +1,54 @@
+[push]
+	default = simple
+[alias]
+	st = status
+	co = checkout
+	ci = commit
+	mt = mergetool
+	br = branch
+	sts = status -s
+	ap = add --patch
+	# View abbreviated SHA, description, and history graph of the latest 20 commits
+	l = log --pretty=oneline -n 20 --graph --abbrev-commit
+	# Clone a repository including all submodules
+	c = clone --recursive
+	# Pull in remote changes for the current repository and all its submodules
+	p = !"git pull; git submodule foreach git pull origin master"
+	# Commit all changes
+	ca = !git add -A && git commit -av
+	# Amend the currently staged files to the latest commit
+	amend = commit --amend --reuse-message=HEAD
+	# List contributors with number of commits
+	contributors = shortlog --summary --numbered
+[core]
+	excludesfile = ~/.gitignore_global
+	editor = vim
+	quotepath = false
+	# 如果ignorecase为true，macos下会有问题
+	ignorecase = false
+[diff]
+	tool = vimdiff
+[merge]
+	tool = vimdiff
+	conflictstyle = diff3
+	# Include summaries of merged commits in newly created merge commit messages
+	log = true
+[mergetool]
+  prompt = false	
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
+# URL shorthands
+[url "git@github.com:"]
+	insteadOf = "gh:"
+	pushInsteadOf = "github:"
+	pushInsteadOf = "git://github.com/"
+[url "git://github.com/"]
+	insteadOf = "github:"
+[url "git@gist.github.com:"]
+	insteadOf = "gst:"
+	pushInsteadOf = "gist:"
+	pushInsteadOf = "git://gist.github.com/"
+[url "git://gist.github.com/"]
+	insteadOf = "gist:"
