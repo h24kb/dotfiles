@@ -141,4 +141,10 @@ main() {
     done
 }
 
+# vim 插件使用vundle进行管理，需要预先初始化
+if [[ ! -d ~/.vim/bundle/Vundle.vim ]]; then
+    print_info "install Vundle.vim..."
+    mkdir -p ~/.vim/bundle
+    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+fi
 main
