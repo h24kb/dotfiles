@@ -1,2 +1,4 @@
 alias emacs="emacs -nw"
 alias e=emacs
+alias m=mark
+alias j=jump
