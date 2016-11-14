@@ -113,7 +113,7 @@ print_success() {
 #
 # finds all .dotfiles in this folder
 declare -a FILES_TO_SYMLINK=$(find . -type f -maxdepth 1 -name ".*" -not -name .DS_Store -not -name .git -not -name .gitignore | sed -e 's|//|/|' | sed -e 's|./.|.|')
-FILES_TO_SYMLINK="$FILES_TO_SYMLINK" # add in vim and the binaries
+FILES_TO_SYMLINK="$FILES_TO_SYMLINK .zsh-custom" # add in vim and the binaries
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 main() {
@@ -147,4 +147,9 @@ if [[ ! -d ~/.vim/bundle/Vundle.vim ]]; then
     mkdir -p ~/.vim/bundle
     git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 fi
+
+# oh-my-zsh
+[[ ! -d ~/.oh-my-zsh ]] && print_info "install oh-my-zsh..." && git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+
 main
+
