@@ -89,6 +89,10 @@ export LANG=en_US.UTF-8
 
 # load aliases
 [[ -f ~/.aliases ]] && source ~/.aliases
-# used .zshrc_local config the local settings
-[[ -f ~/.zshrc_local ]] && source ~/.zshrc_local
+# use .zshrc_local config the local settings
+if [[ -f ~/.zshrc_local ]]; then
+    source ~/.zshrc_local
+else
+    touch ~/.zshrc_local
+fi
 
