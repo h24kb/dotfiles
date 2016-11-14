@@ -113,7 +113,7 @@ print_success() {
 #
 # finds all .dotfiles in this folder
 declare -a FILES_TO_SYMLINK=$(find . -type f -maxdepth 1 -name ".*" -not -name .DS_Store -not -name .git -not -name .gitignore | sed -e 's|//|/|' | sed -e 's|./.|.|')
-FILES_TO_SYMLINK="$FILES_TO_SYMLINK .zsh-custom .pip" # add in vim and the binaries
+FILES_TO_SYMLINK="$FILES_TO_SYMLINK .zsh-custom .pip .spacemacs.d" # add in vim and the binaries
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 main() {
@@ -150,6 +150,28 @@ fi
 
 # oh-my-zsh
 [[ ! -d ~/.oh-my-zsh ]] && print_info "install oh-my-zsh..." && git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+
+# spacemacs
+if [[ ! -d ~/.emacs.d ]]; then
+    print_info "install spacemacs..."
+    git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+elif [[ ! -d ~/.emacs.d/.git || `cd ~/.emacs.d/ && git remote -v | grep syl20bnr/spacemacs | wc -l` -eq "0" ]]; then
+    ask_for_confirmation ".emacs.d already exists, do you want to overwrite it with syl20bnr/spacemacs?"
+    if answer_is_yes; then
+        rm -rf ~/.emacs.d
+        git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+    else
+        print_error "spacemacs is not installed correctly."
+    fi
+fi
+if [[ -f ~/.spacemacs ]]; then
+    ask_for_confirmation "~/.spacemacs already exists, do you want to remove it? (We used the .spacemacs.d directory within this repo.)"
+    if answer_is_yes; then
+        rm ~/.spacemacs && print_success "~/.spacemacs is removed."
+    else
+        print_error "~/.spacemacs is exists, the ~/.spacemacs.d will not be loaded."
+    fi
+fi
 
 main
 
