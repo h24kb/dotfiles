@@ -107,6 +107,25 @@ print_success() {
     printf "\e[0;32m  [✔] $1\e[0m\n"
 }
 
+link_file(){
+    sourceFile=$1
+    targetFile=$2
+    if [ -e "$targetFile" ]; then
+        if [ "$(readlink "$targetFile")" != "$sourceFile" ]; then
+            ask_for_confirmation "'$targetFile' already exists, do you want to overwrite it?"
+            if answer_is_yes; then
+                rm -rf "$targetFile"
+                execute "ln -fs $sourceFile $targetFile" "$targetFile → $sourceFile"
+            else
+                print_error "$targetFile → $sourceFile"
+            fi
+        else
+            print_success "$targetFile → $sourceFile"
+        fi
+    else
+        execute "ln -fs $sourceFile $targetFile" "$targetFile → $sourceFile"
+    fi
+}
 
 #
 # actual symlink stuff
@@ -123,23 +142,12 @@ main() {
     for i in ${FILES_TO_SYMLINK[@]}; do
         sourceFile="$(pwd)/$i"
         targetFile="$HOME/$(printf "%s" "$i" | sed "s/.*\/\(.*\)/\1/g")"
-        if [ -e "$targetFile" ]; then
-            if [ "$(readlink "$targetFile")" != "$sourceFile" ]; then
-                ask_for_confirmation "'$targetFile' already exists, do you want to overwrite it?"
-                if answer_is_yes; then
-                    rm -rf "$targetFile"
-                    execute "ln -fs $sourceFile $targetFile" "$targetFile → $sourceFile"
-                else
-                    print_error "$targetFile → $sourceFile"
-                fi
-            else
-                print_success "$targetFile → $sourceFile"
-            fi
-        else
-            execute "ln -fs $sourceFile $targetFile" "$targetFile → $sourceFile"
-        fi
+        link_file "$sourceFile" "$targetFile"
     done
 }
+
+# Shadowsocks user-rules
+[[ -d ~/.ShadowsocksX-NG ]] && link_file "$(pwd)/user-rule.txt" "$HOME/.ShadowsocksX-NG/user-rule.txt"
 
 # vim 插件使用vundle进行管理，需要预先初始化
 if [[ ! -d ~/.vim/bundle/Vundle.vim ]]; then
@@ -172,6 +180,7 @@ if [[ -f ~/.spacemacs ]]; then
         print_error "~/.spacemacs is exists, the ~/.spacemacs.d will not be loaded."
     fi
 fi
+
 
 main
 
