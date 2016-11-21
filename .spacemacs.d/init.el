@@ -56,7 +56,7 @@ values."
      ;; development
      django
      ansible
-     dash
+     (dash :variables helm-dash-docset-newpath "~/Library/Application Support/Dash/DocSets" )
      shell
      ;; file format
      yaml
